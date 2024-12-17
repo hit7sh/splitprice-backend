@@ -8,18 +8,17 @@ import lombok.Data;
 
 import java.util.List;
 
-
 @Entity
 @Data
-public class Person {
-
+public class BalanceSheet {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
 
-    private String name;
-    private String email;
+    private Double totalAmountPaid;
+    private Double oweAmount;
+    private Double dueAmount;
 
-    private List<Person> friends;
-    private BalanceSheet balanceSheet;
+    private List<Balance> balanceData;
+
 }
