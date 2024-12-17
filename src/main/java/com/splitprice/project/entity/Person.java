@@ -6,6 +6,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Data;
 
+import java.util.List;
+
+
 @Entity
 @Data
 public class Person {
@@ -16,4 +19,6 @@ public class Person {
 
     private String name;
     private String email;
+
+    private List<Person> friends;
 }
