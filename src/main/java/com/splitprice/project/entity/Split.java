@@ -1,9 +1,6 @@
 package com.splitprice.project.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
@@ -14,5 +11,8 @@ public class Split {
     private String id;
 
     private Double amount;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "personId")
     private Person person;
 }

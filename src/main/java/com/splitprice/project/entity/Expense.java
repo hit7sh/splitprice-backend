@@ -1,9 +1,6 @@
 package com.splitprice.project.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.List;
@@ -16,10 +13,17 @@ public class Expense{
     @GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
 
-    private double totalAmount;
+    private Double totalAmount;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "personId")
     private Person paidBy;
     private String description;
     private String image;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "splitId")
     private List<Split> splits;
+
     private String splitType;
 }
