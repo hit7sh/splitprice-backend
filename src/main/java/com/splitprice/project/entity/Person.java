@@ -1,9 +1,6 @@
 package com.splitprice.project.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.List;
@@ -20,6 +17,7 @@ public class Person {
     private String name;
     private String email;
 
-    private List<Person> friends;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="balanceSheetId")
     private BalanceSheet balanceSheet;
 }

@@ -1,9 +1,6 @@
 package com.splitprice.project.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.List;
@@ -19,6 +16,8 @@ public class BalanceSheet {
     private Double oweAmount;
     private Double dueAmount;
 
+    @OneToMany(cascade=CascadeType.ALL)
+    @JoinColumn(name="balanceId")
     private List<Balance> balanceData;
 
 }
