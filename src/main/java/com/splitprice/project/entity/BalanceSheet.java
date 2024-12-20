@@ -23,6 +23,14 @@ public class BalanceSheet {
         return id;
     }
 
+    public void addTotalAmountPaid(Double delta) {
+        this.totalAmountPaid += totalAmountPaid;
+    }
+    public void addOweAmount(Double delta) {
+        this.oweAmount += delta;
+    }
+    public void
+
     public void setId(Integer id) {
         this.id = id;
     }
@@ -58,4 +66,4 @@ public class BalanceSheet {
     public void setBalanceData(List<Balance> balanceData) {
         this.balanceData = balanceData;
     }
-}
+}1

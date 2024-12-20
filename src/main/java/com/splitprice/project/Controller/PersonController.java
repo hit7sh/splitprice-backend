@@ -74,6 +74,8 @@ public class PersonController {
 
             List<contributorDTO> contributorsList = expenseDTO.getContributors();
 
+            payer.getBalanceSheet().setTotalAmountPaid(expenseDTO.getTotalAmt()+0.0);
+
             contributorsList.forEach((contributor)->{
                 payer.getBalanceSheet().getBalanceData().forEach(frndBalance -> {
                     if(frndBalance.getFriendEmail() == contributor.getEmail()){
