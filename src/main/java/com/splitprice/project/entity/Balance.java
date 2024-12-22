@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.util.List;
+
 @Entity
 public class Balance {
     @Id
@@ -13,6 +15,18 @@ public class Balance {
     private Double delta;
 
     private String friendEmail;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name="balanceHistoryId")
+    private List<BalanceHistory> balanceHistoryList;
+
+    public List<BalanceHistory> getBalanceHistoryList() {
+        return balanceHistoryList;
+    }
+
+    public void setBalanceHistoryList(List<BalanceHistory> balanceHistoryList) {
+        this.balanceHistoryList = balanceHistoryList;
+    }
 
     public String getFriendEmail() {
         return friendEmail;

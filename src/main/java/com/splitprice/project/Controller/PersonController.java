@@ -5,12 +5,18 @@ import com.splitprice.project.Repository.PersonRepository;
 import com.splitprice.project.dto.ExpenseRequestBodyDTO;
 import com.splitprice.project.dto.contributorDTO;
 import com.splitprice.project.entity.Balance;
+import com.splitprice.project.entity.BalanceHistory;
 import com.splitprice.project.entity.Person;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 
 @RestController
 @RequestMapping("/person")
@@ -64,30 +70,87 @@ public class PersonController {
 
     @PostMapping("/add-expense")
     public String addExpense(@RequestBody ExpenseRequestBodyDTO expenseDTO){
+        System.out.println(expenseDTO.getTotalAmt());
+        Person payer = personRepository.findByEmail(expenseDTO.getPaidBy()).get();
+        System.out.println(expenseDTO.getPaidBy());
+        System.out.println(expenseDTO.getSplitType());
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        if(expenseDTO.getSplitType().equals("EQUAL")){
 
-        Person payer = personRepository.findByEmail(expenseDTO.getPaidBy().getEmail()).get();
-
-        if(expenseDTO.getSplitTYpe() == "EQUAL"){
+            System.out.println("fyt");
 
             Integer totalContributors = 1+expenseDTO.getContributors().size();
-            Double oweAmount = expenseDTO.getTotalAmt().doubleValue()/totalContributors;
+            Double oweAmount = expenseDTO.getTotalAmt() /totalContributors;
 
             List<contributorDTO> contributorsList = expenseDTO.getContributors();
 
-            payer.getBalanceSheet().setTotalAmountPaid(expenseDTO.getTotalAmt()+0.0);
+            payer.getBalanceSheet().addTotalAmountPaid(expenseDTO.getTotalAmt());
+            payer.getBalanceSheet().addOweAmount(oweAmount);
 
             contributorsList.forEach((contributor)->{
                 payer.getBalanceSheet().getBalanceData().forEach(frndBalance -> {
-                    if(frndBalance.getFriendEmail() == contributor.getEmail()){
+                    if(Objects.equals(frndBalance.getFriendEmail(), contributor.getEmail())){
                         frndBalance.setDelta(frndBalance.getDelta()+oweAmount);
+                        BalanceHistory balanceHistory = new BalanceHistory();
+                        balanceHistory.setDescription(expenseDTO.getDescription());
+                        balanceHistory.setAmount(oweAmount);
+                        balanceHistory.setExpenseCreatedDate(currentDateTime);
+                        frndBalance.getBalanceHistoryList().add(balanceHistory);
                     }
                 });
 
                 Person frnd = personRepository.findByEmail(contributor.getEmail()).get();
+                frnd.getBalanceSheet().getBalanceData().forEach(ele -> {
+                    if(Objects.equals(ele.getFriendEmail(), payer.getEmail())){
+                        ele.setDelta(ele.getDelta()-oweAmount);
+                        BalanceHistory balanceHistory = new BalanceHistory();
+                        balanceHistory.setDescription(expenseDTO.getDescription());
+                        balanceHistory.setAmount(-1*oweAmount);
+                        balanceHistory.setExpenseCreatedDate(currentDateTime);
+                        ele.getBalanceHistoryList().add(balanceHistory);
+                    }
+                });
 
+                frnd.getBalanceSheet().addDueAmount(oweAmount+0.0);
+
+                personRepository.save(frnd);
             }
-            );
 
+
+            );
+            personRepository.save(payer);
+        } else if (expenseDTO.getSplitType().equals("MANUAL")) {
+
+            AtomicReference<Double> payerContribution = new AtomicReference<>(expenseDTO.getTotalAmt());
+
+            expenseDTO.getContributors().forEach((contributor) -> {
+                payerContribution.updateAndGet(v -> v - contributor.getAmount());
+                Person frnd = personRepository.findByEmail(contributor.getEmail()).get();
+                frnd.getBalanceSheet().addDueAmount(contributor.getAmount());
+                frnd.getBalanceSheet().getBalanceData().forEach(dost -> {
+                    if(Objects.equals(dost.getFriendEmail(), payer.getEmail())){
+                        dost.setDelta(dost.getDelta() - contributor.getAmount());
+                        BalanceHistory balanceHistory = new BalanceHistory();
+                        balanceHistory.setDescription(expenseDTO.getDescription());
+                        balanceHistory.setAmount(-1*contributor.getAmount());
+                        balanceHistory.setExpenseCreatedDate(currentDateTime);
+                        dost.getBalanceHistoryList().add(balanceHistory);
+                    }
+
+                });
+                payer.getBalanceSheet().getBalanceData().forEach(frndBalance -> {
+                    if(Objects.equals(frndBalance.getFriendEmail(), contributor.getEmail())){
+                        frndBalance.setDelta(frndBalance.getDelta()+ contributor.getAmount());
+                        BalanceHistory balanceHistory = new BalanceHistory();
+                        balanceHistory.setDescription(expenseDTO.getDescription());
+                        balanceHistory.setAmount(contributor.getAmount());
+                        balanceHistory.setExpenseCreatedDate(currentDateTime);
+                        frndBalance.getBalanceHistoryList().add(balanceHistory);
+                    }
+                });
+            });
+            payer.getBalanceSheet().addOweAmount(expenseDTO.getTotalAmt()-payerContribution.get());
+            payer.getBalanceSheet().setTotalAmountPaid(expenseDTO.getTotalAmt());
         }
 
 

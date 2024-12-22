@@ -15,7 +15,7 @@ public class BalanceSheet {
     private Double oweAmount;
     private Double dueAmount;
 
-    @OneToMany(cascade=CascadeType.ALL)
+    @OneToMany(cascade=CascadeType.ALL) 
     @JoinColumn(name="balanceId")
     private List<Balance> balanceData;
 
@@ -24,12 +24,15 @@ public class BalanceSheet {
     }
 
     public void addTotalAmountPaid(Double delta) {
-        this.totalAmountPaid += totalAmountPaid;
+        this.totalAmountPaid += delta;
     }
     public void addOweAmount(Double delta) {
         this.oweAmount += delta;
     }
-    public void
+    public void addDueAmount(Double delta){
+        this.dueAmount += delta;
+    }
+
 
     public void setId(Integer id) {
         this.id = id;
@@ -66,4 +69,4 @@ public class BalanceSheet {
     public void setBalanceData(List<Balance> balanceData) {
         this.balanceData = balanceData;
     }
-}1
+}

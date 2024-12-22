@@ -7,33 +7,42 @@ import java.util.List;
 
 public class ExpenseRequestBodyDTO {
 
-    Person paidBy;
-    Integer totalAmt;
-    String splitTYpe;
+    String paidBy;
+    Double totalAmt;
+    String description;
+    String splitType;
     List<contributorDTO> contributors;
 
-    public Person getPaidBy() {
+    public String getPaidBy() {
         return paidBy;
     }
 
-    public void setPaidBy(Person paidBy) {
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setPaidBy(String paidBy) {
         this.paidBy = paidBy;
     }
 
-    public Integer getTotalAmt() {
+    public Double getTotalAmt() {
         return totalAmt;
     }
 
-    public void setTotalAmt(Integer totalAmt) {
+    public void setTotalAmt(Double totalAmt) {
         this.totalAmt = totalAmt;
     }
 
-    public String getSplitTYpe() {
-        return splitTYpe;
+    public String getSplitType() {
+        return splitType;
     }
 
-    public void setSplitTYpe(String splitTYpe) {
-        this.splitTYpe = splitTYpe;
+    public void setSplitType(String splitType) {
+        this.splitType = splitType;
     }
 
     public List<contributorDTO> getContributors() {
