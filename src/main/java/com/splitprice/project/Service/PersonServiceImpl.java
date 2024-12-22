@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.text.html.Option;
+import java.util.Optional;
+
 
 @Service
 public class PersonServiceImpl implements PersonService{
@@ -17,9 +20,9 @@ public class PersonServiceImpl implements PersonService{
     private PersonRepository personRepository;
 
 
-    public String addPerson(Person person){
-        personRepository.save(person);
-        return "Success";
+    public Person addPerson(Person person){
+       return personRepository.save(person);
+
     }
 
     @GetMapping("/get-user/{email}")
@@ -29,8 +32,9 @@ public class PersonServiceImpl implements PersonService{
 
 
     @DeleteMapping("/delete-user/{email}")
-    public void deletePerson(String email){
+    public String deletePerson(String email){
         personRepository.deleteByEmail(email);
+        return "DELETED";
     }
 
     @PostMapping("/add-friend/{user1}/{user2}")
