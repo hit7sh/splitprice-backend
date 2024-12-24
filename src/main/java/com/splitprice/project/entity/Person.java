@@ -53,4 +53,14 @@ public class Person {
     public void setBalanceSheet(BalanceSheet balanceSheet) {
         this.balanceSheet = balanceSheet;
     }
+
+    @Override
+    public String toString() {
+        return "Person{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", balanceSheet=" + balanceSheet +
+                '}';
+    }
 }

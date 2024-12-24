@@ -16,6 +16,18 @@ public class ExpenseRequestBodyDTO {
 
     @Min(value = 0, message = "Enter positive(+ve) value")
     Double totalAmt;
+
+    @Override
+    public String toString() {
+        return "ExpenseRequestBodyDTO{" +
+                "paidBy='" + paidBy + '\'' +
+                ", totalAmt=" + totalAmt +
+                ", description='" + description + '\'' +
+                ", splitType='" + splitType + '\'' +
+                ", contributors=" + contributors +
+                '}';
+    }
+
     String description;
     String splitType;
     List<contributorDTO> contributors;

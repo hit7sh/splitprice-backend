@@ -2,13 +2,17 @@ package com.splitprice.project.Controller;
 
 import com.splitprice.project.Service.ExpenseService;
 import com.splitprice.project.Service.PersonService;
+import com.splitprice.project.configurations.ModelMapperConfig;
 import com.splitprice.project.dto.ExpenseRequestBodyDTO;
+import com.splitprice.project.dto.PersonDTO;
+import com.splitprice.project.entity.Expense;
 import com.splitprice.project.entity.Person;
 import com.splitprice.project.exceptionHandler.ArgumentMethodInValidException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,9 +31,12 @@ public class PersonController {
     @Autowired
     private ExpenseService expenseService;
 
-    @PostMapping("/add")
-    public ResponseEntity<Person> addPerson(@RequestBody Person person){
+    @Autowired
+    private ModelMapper modelMapper;
 
+    @PostMapping("/add")
+    public ResponseEntity<Person> addPerson(@RequestBody PersonDTO personDTO){
+        Person person = modelMapper.map(personDTO, Person.class);
         return ResponseEntity.status(HttpStatus.OK).body(personService.addPerson(person));
     }
 
@@ -51,7 +58,8 @@ public class PersonController {
     }
 
     @PostMapping("/add-expense")
-    public  ResponseEntity<String> addExpense(@RequestBody @Valid ExpenseRequestBodyDTO expenseDTO) throws MethodArgumentNotValidException{
-        return ResponseEntity.status(HttpStatus.OK).body( expenseService.addExpense(expenseDTO));
+    public  ResponseEntity<String> addExpense(@RequestBody @Valid ExpenseRequestBodyDTO expenseRequestBodyDTO) throws MethodArgumentNotValidException{
+
+        return ResponseEntity.status(HttpStatus.OK).body( expenseService.addExpense(expenseRequestBodyDTO));
     }
 }

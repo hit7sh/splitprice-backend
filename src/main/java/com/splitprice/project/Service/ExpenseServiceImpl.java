@@ -55,7 +55,7 @@ public class ExpenseServiceImpl implements ExpenseService {
                     });
 
                     frnd.getBalanceSheet().addDueAmount(oweAmount+0.0);
-
+                    System.out.println("FRND == "+frnd);
                     personRepository.save(frnd);
                 }
 
@@ -94,6 +94,7 @@ public class ExpenseServiceImpl implements ExpenseService {
                     balanceHistory.setExpenseCreatedDate(currentDateTime);
                     frndBalance.getBalanceHistoryList().add(balanceHistory);
                 }
+                personRepository.save(frnd);
             });
         });
         payer.getBalanceSheet().addOweAmount(expenseDTO.getTotalAmt()-payerContribution.get());
@@ -104,20 +105,15 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     public String addExpense(ExpenseRequestBodyDTO expenseDTO){
         Person payer = personRepository.findByEmail(expenseDTO.getPaidBy()).get();
+        System.out.println("person ===> " + payer);
+        System.out.println("ExpenseDTO ===> " + expenseDTO);
         LocalDateTime currentDateTime = LocalDateTime.now();
-        switch (expenseDTO.getSplitType())
-        {
-            case "EQUAL":
-                handleEqualExpense(expenseDTO,payer,currentDateTime);
-                break;
-
-            case "MANUAL":
-                handleManualExpense(expenseDTO,payer,currentDateTime);
-                break;
-
-            default:
-                break;
+        if (expenseDTO.getSplitType().equalsIgnoreCase("EQUAL")) {
+            System.out.println("==EQUAL==");
+            handleEqualExpense(expenseDTO, payer, currentDateTime);
         }
+        else if (expenseDTO.getSplitType().equalsIgnoreCase("MANUAL"))
+                handleManualExpense(expenseDTO,payer,currentDateTime);
         return "SUCCESS";
     }
 

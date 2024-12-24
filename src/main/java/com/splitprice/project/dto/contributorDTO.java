@@ -6,6 +6,15 @@ public class contributorDTO {
     Double percentage;
     Double amount;
 
+    @Override
+    public String toString() {
+        return "contributorDTO{" +
+                "email='" + email + '\'' +
+                ", percentage=" + percentage +
+                ", amount=" + amount +
+                '}';
+    }
+
     public String getEmail() {
         return email;
     }
