@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 public class BalanceHistoryDTO {
     private Integer id;
     private Double amount;
-
     private String description;
     private LocalDateTime expenseCreatedDate;
     public Integer getId() {

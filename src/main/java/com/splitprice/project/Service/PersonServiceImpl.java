@@ -20,13 +20,12 @@ public class PersonServiceImpl implements PersonService{
     private PersonRepository personRepository;
 
 
-    public Person addPerson(Person person){
+    public Person addPerson(Person person) throws Exception {
        return personRepository.save(person);
-
     }
 
     @GetMapping("/get-user/{email}")
-    public Person getPerson(String email) {
+    public Person getPerson(String email) throws Exception {
         return personRepository.findByEmail(email).get();
     }
 

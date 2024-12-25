@@ -10,10 +10,10 @@ import java.util.Optional;
 @Service
 public interface PersonService {
 
-    Person addPerson(Person person);
-    Person getPerson(String email);
-    String deletePerson(String email);
-    String addFriend(String emailPerson1, String emailPerson2);
+    Person addPerson(Person person) throws Exception;
+    Person getPerson(String email) throws Exception;
+    String deletePerson(String email) throws Exception;
+    String addFriend(String emailPerson1, String emailPerson2) throws Exception;
 
 
 }

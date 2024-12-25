@@ -26,7 +26,6 @@ public class ExceptionControllerAdvice {
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ErrorInfo> exceptionHandler(ConstraintViolationException exception) {
-
         ErrorInfo error = new ErrorInfo();
         error.setErrorCode(HttpStatus.BAD_REQUEST.value());
         error.setErrorMessage("Please provide a valid email format");
@@ -37,7 +36,15 @@ public class ExceptionControllerAdvice {
 
     @ExceptionHandler(ArgumentMethodInValidException.class)
     public ResponseEntity<ErrorInfo> exceptionHandler(ArgumentMethodInValidException exception) {
+        ErrorInfo error = new ErrorInfo();
+        error.setErrorCode(HttpStatus.BAD_REQUEST.value());
+        error.setErrorMessage(exception.getMessage());
+        error.setTimeStamp(LocalDateTime.now());
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorInfo> exceptionHandler(Exception exception) {
         ErrorInfo error = new ErrorInfo();
         error.setErrorCode(HttpStatus.BAD_REQUEST.value());
         error.setErrorMessage(exception.getMessage());

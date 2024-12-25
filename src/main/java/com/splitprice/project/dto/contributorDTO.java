@@ -1,8 +1,13 @@
 package com.splitprice.project.dto;
 
-public class contributorDTO {
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 
+public class contributorDTO {
+    @Email(message="INVLID EMAIL in contributors array")
     String email;
+
     Double percentage;
     Double amount;
 

@@ -2,9 +2,7 @@ package com.splitprice.project.dto;
 
 import com.splitprice.project.entity.Person;
 import com.splitprice.project.entity.Split;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.*;
 
 import java.util.List;
 
@@ -17,19 +15,13 @@ public class ExpenseRequestBodyDTO {
     @Min(value = 0, message = "Enter positive(+ve) value")
     Double totalAmt;
 
-    @Override
-    public String toString() {
-        return "ExpenseRequestBodyDTO{" +
-                "paidBy='" + paidBy + '\'' +
-                ", totalAmt=" + totalAmt +
-                ", description='" + description + '\'' +
-                ", splitType='" + splitType + '\'' +
-                ", contributors=" + contributors +
-                '}';
-    }
-
+    @Size(min = 1, max = 50, message = "No Description")
     String description;
+
+    @Pattern(regexp = "^(EQUAL|MANUAL|PERCENTAGE)$", message = "split type must be EQUAL|MANUAL|PERCENTAGE")
     String splitType;
+
+    @Size(min = 1, message = "No Contributors")
     List<contributorDTO> contributors;
 
     public String getPaidBy() {
@@ -71,5 +63,14 @@ public class ExpenseRequestBodyDTO {
     public void setContributors(List<contributorDTO> contributors) {
         this.contributors = contributors;
     }
-
+    @Override
+    public String toString() {
+        return "ExpenseRequestBodyDTO{" +
+                "paidBy='" + paidBy + '\'' +
+                ", totalAmt=" + totalAmt +
+                ", description='" + description + '\'' +
+                ", splitType='" + splitType + '\'' +
+                ", contributors=" + contributors +
+                '}';
+    }
 }

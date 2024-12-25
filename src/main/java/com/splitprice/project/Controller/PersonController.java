@@ -35,31 +35,37 @@ public class PersonController {
     private ModelMapper modelMapper;
 
     @PostMapping("/add")
-    public ResponseEntity<Person> addPerson(@RequestBody PersonDTO personDTO){
+    public ResponseEntity<Person> addPerson(@RequestBody @Valid PersonDTO personDTO) throws MethodArgumentNotValidException, Exception {
         Person person = modelMapper.map(personDTO, Person.class);
         return ResponseEntity.status(HttpStatus.OK).body(personService.addPerson(person));
     }
 
     @GetMapping("/get-user/{email}")
-    public ResponseEntity<Person> getPerson(@PathVariable @Email(message = "Not a Valid Email Format") String email) {
-        System.out.println("JGEFcugc");
+    public ResponseEntity<Person> getPerson(
+            @PathVariable @Email(message = "Not a Valid Email Format") String email
+    ) throws ConstraintViolationException, Exception {
         return ResponseEntity.status(HttpStatus.OK).body(personService.getPerson(email));
     }
 
     @DeleteMapping("/delete-user/{email}")
-    public ResponseEntity<String> deletePerson(@PathVariable @Email(message = "Not a Valid Email Format") String email){
-
+    public ResponseEntity<String> deletePerson(
+            @PathVariable @Email(message = "Not a Valid Email Format") String email
+    ) throws ConstraintViolationException, Exception {
         return ResponseEntity.status(HttpStatus.OK).body(personService.deletePerson(email));
     }
 
     @PostMapping("/add-friend/{user1}/{user2}")
-    public ResponseEntity<String> addFriend(@PathVariable @Email(message = "Not a Valid Email Format") String user1, @PathVariable @Email(message = "Not a Valid Email Format") String user2) throws ConstraintViolationException {
+    public ResponseEntity<String> addFriend(
+            @PathVariable @Email(message = "Not a Valid Email Format") String user1,
+            @PathVariable @Email(message = "Not a Valid Email Format") String user2
+    ) throws ConstraintViolationException, Exception {
         return ResponseEntity.status(HttpStatus.OK).body( personService.addFriend(user1,user2));
     }
 
     @PostMapping("/add-expense")
-    public  ResponseEntity<String> addExpense(@RequestBody @Valid ExpenseRequestBodyDTO expenseRequestBodyDTO) throws MethodArgumentNotValidException{
-
+    public  ResponseEntity<String> addExpense(
+            @RequestBody @Valid ExpenseRequestBodyDTO expenseRequestBodyDTO
+    ) throws MethodArgumentNotValidException, Exception {
         return ResponseEntity.status(HttpStatus.OK).body( expenseService.addExpense(expenseRequestBodyDTO));
     }
 }
