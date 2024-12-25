@@ -6,6 +6,6 @@ import org.springframework.stereotype.Service;
 @Service
 public interface ExpenseService {
 
-    String addExpense(ExpenseRequestBodyDTO expenseDTO);
+    String addExpense(ExpenseRequestBodyDTO expenseRequestBodyDTO);
 
 }

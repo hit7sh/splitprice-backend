@@ -20,14 +20,14 @@ public class ExpenseServiceImpl implements ExpenseService {
     private PersonRepository personRepository;
 
 
-    public void handleEqualExpense(ExpenseRequestBodyDTO expenseDTO, Person payer, LocalDateTime currentDateTime){
+    public void handleEqualExpense(ExpenseRequestBodyDTO expenseRequestBodyDTO, Person payer, LocalDateTime currentDateTime){
 
-        Integer totalContributors = 1+expenseDTO.getContributors().size();
-        Double oweAmount = expenseDTO.getTotalAmt() /totalContributors;
+        Integer totalContributors = 1+expenseRequestBodyDTO.getContributors().size();
+        Double oweAmount = expenseRequestBodyDTO.getTotalAmt() /totalContributors;
 
-        List<contributorDTO> contributorsList = expenseDTO.getContributors();
+        List<contributorDTO> contributorsList = expenseRequestBodyDTO.getContributors();
 
-        payer.getBalanceSheet().addTotalAmountPaid(expenseDTO.getTotalAmt());
+        payer.getBalanceSheet().addTotalAmountPaid(expenseRequestBodyDTO.getTotalAmt());
         payer.getBalanceSheet().addOweAmount(oweAmount);
 
         contributorsList.forEach((contributor)->{
@@ -35,7 +35,7 @@ public class ExpenseServiceImpl implements ExpenseService {
                         if(Objects.equals(frndBalance.getFriendEmail(), contributor.getEmail())){
                             frndBalance.setDelta(frndBalance.getDelta()+oweAmount);
                             BalanceHistory balanceHistory = new BalanceHistory();
-                            balanceHistory.setDescription(expenseDTO.getDescription());
+                            balanceHistory.setDescription(expenseRequestBodyDTO.getDescription());
                             balanceHistory.setAmount(oweAmount);
                             balanceHistory.setExpenseCreatedDate(currentDateTime);
                             frndBalance.getBalanceHistoryList().add(balanceHistory);
@@ -47,7 +47,7 @@ public class ExpenseServiceImpl implements ExpenseService {
                         if(Objects.equals(ele.getFriendEmail(), payer.getEmail())){
                             ele.setDelta(ele.getDelta()-oweAmount);
                             BalanceHistory balanceHistory = new BalanceHistory();
-                            balanceHistory.setDescription(expenseDTO.getDescription());
+                            balanceHistory.setDescription(expenseRequestBodyDTO.getDescription());
                             balanceHistory.setAmount(-1*oweAmount);
                             balanceHistory.setExpenseCreatedDate(currentDateTime);
                             ele.getBalanceHistoryList().add(balanceHistory);
@@ -65,12 +65,12 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     }
 
-    public void handleManualExpense(ExpenseRequestBodyDTO expenseDTO, Person payer, LocalDateTime currentDateTime){
+    public void handleManualExpense(ExpenseRequestBodyDTO expenseRequestBodyDTO, Person payer, LocalDateTime currentDateTime){
 
 
-        AtomicReference<Double> payerContribution = new AtomicReference<>(expenseDTO.getTotalAmt());
+        AtomicReference<Double> payerContribution = new AtomicReference<>(expenseRequestBodyDTO.getTotalAmt());
 
-        expenseDTO.getContributors().forEach((contributor) -> {
+        expenseRequestBodyDTO.getContributors().forEach((contributor) -> {
             payerContribution.updateAndGet(v -> v - contributor.getAmount());
             Person frnd = personRepository.findByEmail(contributor.getEmail()).get();
             frnd.getBalanceSheet().addDueAmount(contributor.getAmount());
@@ -78,7 +78,7 @@ public class ExpenseServiceImpl implements ExpenseService {
                 if(Objects.equals(dost.getFriendEmail(), payer.getEmail())){
                     dost.setDelta(dost.getDelta() - contributor.getAmount());
                     BalanceHistory balanceHistory = new BalanceHistory();
-                    balanceHistory.setDescription(expenseDTO.getDescription());
+                    balanceHistory.setDescription(expenseRequestBodyDTO.getDescription());
                     balanceHistory.setAmount(-1*contributor.getAmount());
                     balanceHistory.setExpenseCreatedDate(currentDateTime);
                     dost.getBalanceHistoryList().add(balanceHistory);
@@ -89,7 +89,7 @@ public class ExpenseServiceImpl implements ExpenseService {
                 if(Objects.equals(frndBalance.getFriendEmail(), contributor.getEmail())){
                     frndBalance.setDelta(frndBalance.getDelta()+ contributor.getAmount());
                     BalanceHistory balanceHistory = new BalanceHistory();
-                    balanceHistory.setDescription(expenseDTO.getDescription());
+                    balanceHistory.setDescription(expenseRequestBodyDTO.getDescription());
                     balanceHistory.setAmount(contributor.getAmount());
                     balanceHistory.setExpenseCreatedDate(currentDateTime);
                     frndBalance.getBalanceHistoryList().add(balanceHistory);
@@ -97,23 +97,23 @@ public class ExpenseServiceImpl implements ExpenseService {
                 personRepository.save(frnd);
             });
         });
-        payer.getBalanceSheet().addOweAmount(expenseDTO.getTotalAmt()-payerContribution.get());
-        payer.getBalanceSheet().setTotalAmountPaid(expenseDTO.getTotalAmt());
+        payer.getBalanceSheet().addOweAmount(expenseRequestBodyDTO.getTotalAmt()-payerContribution.get());
+        payer.getBalanceSheet().setTotalAmountPaid(expenseRequestBodyDTO.getTotalAmt());
 
     }
 
 
-    public String addExpense(ExpenseRequestBodyDTO expenseDTO){
-        Person payer = personRepository.findByEmail(expenseDTO.getPaidBy()).get();
+    public String addExpense(ExpenseRequestBodyDTO expenseRequestBodyDTO) {
+        Person payer = personRepository.findByEmail(expenseRequestBodyDTO.getPaidBy()).get();
         System.out.println("person ===> " + payer);
-        System.out.println("ExpenseDTO ===> " + expenseDTO);
+        System.out.println("expenseRequestBodyDTO ===> " + expenseRequestBodyDTO);
         LocalDateTime currentDateTime = LocalDateTime.now();
-        if (expenseDTO.getSplitType().equalsIgnoreCase("EQUAL")) {
+        if (expenseRequestBodyDTO.getSplitType().equalsIgnoreCase("EQUAL")) {
             System.out.println("==EQUAL==");
-            handleEqualExpense(expenseDTO, payer, currentDateTime);
+            handleEqualExpense(expenseRequestBodyDTO, payer, currentDateTime);
         }
-        else if (expenseDTO.getSplitType().equalsIgnoreCase("MANUAL"))
-                handleManualExpense(expenseDTO,payer,currentDateTime);
+        else if (expenseRequestBodyDTO.getSplitType().equalsIgnoreCase("MANUAL"))
+                handleManualExpense(expenseRequestBodyDTO,payer,currentDateTime);
         return "SUCCESS";
     }
 
