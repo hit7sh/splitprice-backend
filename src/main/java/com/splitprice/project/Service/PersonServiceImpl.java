@@ -21,6 +21,7 @@ public class PersonServiceImpl implements PersonService{
 
 
     public Person addPerson(Person person) throws Exception {
+        System.out.println("addPerson" + person);
        return personRepository.save(person);
     }
 
