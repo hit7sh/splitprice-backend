@@ -65,7 +65,7 @@ public class PersonController {
     @PostMapping("/add-expense")
     public  ResponseEntity<String> addExpense(
             @RequestBody @Valid ExpenseRequestBodyDTO expenseRequestBodyDTO
-    ) throws MethodArgumentNotValidException, Exception {
+    ) throws MethodArgumentNotValidException, Exception  {
         return ResponseEntity.status(HttpStatus.OK).body( expenseService.addExpense(expenseRequestBodyDTO));
     }
 }
