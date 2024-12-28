@@ -20,6 +20,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/person")
 @Transactional
@@ -30,7 +32,6 @@ public class PersonController {
     private PersonService personService;
     @Autowired
     private ExpenseService expenseService;
-
     @Autowired
     private ModelMapper modelMapper;
 
@@ -38,6 +39,11 @@ public class PersonController {
     public ResponseEntity<Person> addPerson(@RequestBody @Valid PersonDTO personDTO) throws MethodArgumentNotValidException, Exception {
         Person person = modelMapper.map(personDTO, Person.class);
         return ResponseEntity.status(HttpStatus.OK).body(personService.addPerson(person));
+    }
+
+    @GetMapping("/get-all-users")
+    public ResponseEntity<List<Person>> getAllPerson() throws Exception {
+        return ResponseEntity.status(HttpStatus.OK).body(personService.getAllPerson());
     }
 
     @GetMapping("/get-user/{email}")
