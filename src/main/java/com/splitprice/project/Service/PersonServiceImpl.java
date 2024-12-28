@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
 import javax.swing.text.html.Option;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -21,23 +22,26 @@ public class PersonServiceImpl implements PersonService{
 
 
     public Person addPerson(Person person) throws Exception {
-        System.out.println("addPerson" + person);
-       return personRepository.save(person);
+          return personRepository.save(person);
     }
 
-    @GetMapping("/get-user/{email}")
+
     public Person getPerson(String email) throws Exception {
         return personRepository.findByEmail(email).get();
     }
 
+    public List<Person> getAllPerson() throws Exception {
+        return personRepository.findAll();
+    }
 
-    @DeleteMapping("/delete-user/{email}")
+
+
     public String deletePerson(String email){
         personRepository.deleteByEmail(email);
         return "DELETED";
     }
 
-    @PostMapping("/add-friend/{user1}/{user2}")
+
     public String addFriend( String user1,String user2){
         Person A = personRepository.findByEmail(user1).get();
         Person B = personRepository.findByEmail(user2).get();
