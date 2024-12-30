@@ -15,6 +15,7 @@ public class Balance {
     private Double delta;
 
     private String friendEmail;
+    private String friendName;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name="balanceHistoryId")

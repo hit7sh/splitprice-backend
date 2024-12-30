@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/person")
 @Transactional
@@ -45,7 +46,8 @@ public class PersonController {
 
     @GetMapping("/get-all-users")
     public ResponseEntity<List<Person>> getAllPerson() throws Exception {
-        return ResponseEntity.status(HttpStatus.OK).body(personService.getAllPerson());
+        List<Person> personList = personService.getAllPerson();
+        return ResponseEntity.status(HttpStatus.OK).body(personList);
     }
 
     @GetMapping("/get-user/{email}")

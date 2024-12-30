@@ -49,10 +49,12 @@ public class PersonServiceImpl implements PersonService{
         Balance obj1 = new Balance();
         obj1.setDelta(0.0);
         obj1.setFriendEmail(B.getEmail());
+        obj1.setFriendName(B.getName());
         A.getBalanceSheet().getBalanceData().add(obj1);
         Balance obj2 = new Balance();
         obj2.setDelta(0.0);
         obj2.setFriendEmail(A.getEmail());
+        obj2.setFriendName(A.getName());
         B.getBalanceSheet().getBalanceData().add(obj2);
 
         personRepository.save(A);
