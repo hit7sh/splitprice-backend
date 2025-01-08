@@ -55,7 +55,6 @@ public class ExpenseServiceImpl implements ExpenseService {
                     });
 
                     frnd.getBalanceSheet().addDueAmount(oweAmount+0.0);
-                    System.out.println("FRND == "+frnd);
                     personRepository.save(frnd);
                 }
 
@@ -98,7 +97,7 @@ public class ExpenseServiceImpl implements ExpenseService {
             });
         });
         payer.getBalanceSheet().addOweAmount(expenseRequestBodyDTO.getTotalAmt()-payerContribution.get());
-        payer.getBalanceSheet().setTotalAmountPaid(expenseRequestBodyDTO.getTotalAmt());
+        payer.getBalanceSheet().addTotalAmountPaid(expenseRequestBodyDTO.getTotalAmt());
 
     }
 
